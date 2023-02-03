@@ -1,4 +1,6 @@
+import 'package:dreamtouch/app/controllers/auth_provider.dart';
 import 'package:dreamtouch/app/controllers/other_provider.dart';
+import 'package:dreamtouch/app/screen/message/message_page.dart';
 import 'package:dreamtouch/utils/text.styles.dart';
 import 'package:dreamtouch/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +32,7 @@ class _RegisterScreen2State extends State<RegisterScreen2> {
       appBar: const PageAppBar(
         title: "Create Account",
       ),
-      body: Consumer<OtherProvider>(builder: (context, otherProvider, child) {
+      body: Consumer2<OtherProvider, AuthProvider>(builder: (context, otherProvider, authProvider, child) {
         return SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -79,7 +81,14 @@ class _RegisterScreen2State extends State<RegisterScreen2> {
                       child: InkWell(
                         onTap: () {
                           otherProvider.clearImage();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChooseImageAndCropImageView(16, 9, 640, 260,isFromNid: true,)));
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const ChooseImageAndCropImageView(
+                                    16,
+                                    9,
+                                    640,
+                                    260,
+                                    isFromNid: true,
+                                  )));
                         },
                         child: Container(
                           height: 40,
@@ -138,7 +147,8 @@ class _RegisterScreen2State extends State<RegisterScreen2> {
                       child: InkWell(
                         onTap: () {
                           otherProvider.clearImage();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => const ChooseImageAndCropImageView(16, 9, 640, 260,isFromProfile: true)));
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const ChooseImageAndCropImageView(16, 9, 640, 260, isFromProfile: true)));
                         },
                         child: Container(
                           height: 40,
@@ -158,21 +168,41 @@ class _RegisterScreen2State extends State<RegisterScreen2> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  CustomButton(
+                  otherProvider.isLoading?
+                      Center(
+                        child: CircularProgressIndicator(),
+                      ):authProvider.isLoading?
+                      Center(
+                        child: CircularProgressIndicator(),
+                      ):CustomButton(
                     btnTxt: "Create Account",
                     radius: 25,
                     onTap: () {
-                      if(otherProvider.pageProfileFile ==null){
+                      if (otherProvider.pageProfileFile == null) {
                         Fluttertoast.showToast(msg: "Please Select Image First");
-                      }else if(otherProvider.pageCoverFile ==null)
-                        {
-                          Fluttertoast.showToast(msg: "Please Select Image");
-                        }
-                      else
-                        {
-                          otherProvider.uploadImage();
-                        }
-                     // Navigator.push(context, MaterialPageRoute(builder: (builder) => RegisterScreen2()));
+                      } else if (otherProvider.pageCoverFile == null) {
+                        Fluttertoast.showToast(msg: "Please Select Image");
+                      } else {
+                        otherProvider.uploadNidorBirth((status) {
+                          if (status) {
+                            otherProvider.uploadPhoto((status) {
+                              if (status) {
+                                authProvider.createAccount(widget.gmail, widget.password, (status) {
+                                  if (status) {
+                                    authProvider.createProfile(widget.teamNo, widget.permitCode, widget.connectingDate, widget.name,
+                                        widget.phoneNumber, widget.gmail, otherProvider.nidUrl, otherProvider.photoUrl, (status) {
+                                          if (status) {
+                                            Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>
+                                                const MessagePage()), (Route<dynamic> route) => false);
+                                          }
+                                        });
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      }
                     },
                   ),
                 ],
