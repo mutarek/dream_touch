@@ -55,12 +55,6 @@ class _LoginPageState extends State<LoginPage> {
                   CustomButton(
                       btnTxt: 'Login',
                       onTap: () {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    HomePage()),
-                                (Route<dynamic> route) => false);
                         if (emailCon.text.isEmpty) {
                           Fluttertoast.showToast(msg: "ID IS Required");
                         } else if (paddCon.text.isEmpty) {
@@ -69,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                          else {
                            authProvider.login(emailCon.text,paddCon.text,(status){
                              if(status){
-                               authProvider.checkProfile(emailCon.text,(status){
+                               authProvider.getSpecie(emailCon.text,(status){
                                  if(status){
                                    Navigator.pushAndRemoveUntil(
                                        context,
@@ -77,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                                            builder: (BuildContext context) =>
                                                HomePage()),
                                            (Route<dynamic> route) => false);
+                                 }else{
+
                                  }
                                });
                              }

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -11,7 +12,9 @@ class AuthProvider with ChangeNotifier {
   late final DocumentReference documentReference;
   get user => _auth.currentUser;
   bool isLoading = false;
-  String userId = "";
+  String userName = "";
+  String userProfile = "";
+  String workPermitCode = "";
 
   createAccount(String email, String pass, Function callback) async {
     isLoading = true;
@@ -22,7 +25,6 @@ class AuthProvider with ChangeNotifier {
         password: pass,
       );
       callback(true);
-      userId = credential.user!.uid;
       notifyListeners();
     } on FirebaseAuthException catch (e) {
       isLoading = false;
@@ -63,16 +65,6 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       Fluttertoast.showToast(msg: error);
     });
-    // usersRef.add(data).then((value) {}).then((value) {
-    //   callback(true);
-    //   isLoading = false;
-    //   notifyListeners();
-    // }).catchError((onError) {
-    //   callback(false);
-    //   isLoading = false;
-    //   notifyListeners();
-    //   Fluttertoast.showToast(msg: onError);
-    // });
   }
 
   login(String email, String pass, Function callback) async {
@@ -90,22 +82,45 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-  checkProfile(String email,Function callback){
+  getSpecie(String email,Function callback) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    DocumentReference documentReference = firebaseFirestore.collection("Users").doc(email);
-    documentReference.get().then((snapshot) {
-      if(snapshot.exists){
-        if(snapshot.data().toString().contains("is_approved:false")){
-          callback(true);
-        }else
-          {
-            callback(false);
-          }
-      }
-      else{
-        Fluttertoast.showToast(msg: "Ops No Database Found");
-        callback(false);
-      }
-    });
+    CollectionReference collectionReference = firebaseFirestore.collection("Users");
+    DocumentSnapshot snap = await collectionReference.doc(email).get();
+    bool approved = ((snap.data() as Map)['is_approved']);
+    if(approved){
+      isLoading = false;
+      callback(true);
+      saveToLocalStorage(email);
+      notifyListeners();
+    }else{
+      callback(false);
+      isLoading = false;
+      notifyListeners();
+      Fluttertoast.showToast(msg: "Admin Didn't Approved");
+    }
+  }
+  saveToLocalStorage(String email) async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('email', email);
+    prefs.setBool("is_logged", true);
+  }
+
+  getFromLocalStorage() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('email');
+    return stringValue;
+  }
+  getCurrentUserProfile() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? stringValue = prefs.getString('email');
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    CollectionReference collectionReference = firebaseFirestore.collection("Users");
+    DocumentSnapshot snap = await collectionReference.doc(stringValue).get();
+    userName = ((snap.data() as Map)['user_name']);
+    userProfile = ((snap.data() as Map)['user_profileUrl']);
+    workPermitCode = ((snap.data() as Map)['permitCode']);
+    notifyListeners();
   }
 }
+
+
