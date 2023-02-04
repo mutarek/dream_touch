@@ -1,9 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dreamtouch/app/screen/home/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AuthProvider with ChangeNotifier {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final firestore = FirebaseFirestore.instance;
+  late final DocumentReference documentReference;
+  get user => _auth.currentUser;
   bool isLoading = false;
   String userId = "";
 
@@ -11,7 +17,7 @@ class AuthProvider with ChangeNotifier {
     isLoading = true;
     notifyListeners();
     try {
-      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: pass,
       );
@@ -47,34 +53,59 @@ class AuthProvider with ChangeNotifier {
       'user_profileUrl': photoUrl,
       'is_approved': false,
     };
-    usersRef.add(data).then((value) {}).then((value) {
+    usersRef.doc(email).set(data).then((value) {
       callback(true);
       isLoading = false;
       notifyListeners();
-    }).catchError((onError) {
+    }).catchError((error){
       callback(false);
       isLoading = false;
       notifyListeners();
-      Fluttertoast.showToast(msg: onError);
+      Fluttertoast.showToast(msg: error);
     });
+    // usersRef.add(data).then((value) {}).then((value) {
+    //   callback(true);
+    //   isLoading = false;
+    //   notifyListeners();
+    // }).catchError((onError) {
+    //   callback(false);
+    //   isLoading = false;
+    //   notifyListeners();
+    //   Fluttertoast.showToast(msg: onError);
+    // });
   }
 
   login(String email, String pass, Function callback) async {
     isLoading = true;
     notifyListeners();
-    FirebaseAuth firebaseAuth = await FirebaseAuth.instance;
-    firebaseAuth.signInWithEmailAndPassword(email: email, password: pass).then((value) {
+    _auth.signInWithEmailAndPassword(email: email, password: pass).then((value) {
       callback(true);
-      userId = firebaseAuth.currentUser!.uid.toString();
+      isLoading = true;
       notifyListeners();
+      Fluttertoast.showToast(msg: "Login Success");
     }).onError((error, stackTrace) {
       isLoading = false;
       callback(false);
+      Fluttertoast.showToast(msg: error.toString());
       notifyListeners();
     });
   }
-  checkProfile(){
+  checkProfile(String email,Function callback){
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    final snapshot = firebaseFirestore.collection("Users").doc(userId).get();
+    DocumentReference documentReference = firebaseFirestore.collection("Users").doc(email);
+    documentReference.get().then((snapshot) {
+      if(snapshot.exists){
+        if(snapshot.data().toString().contains("is_approved:false")){
+          callback(true);
+        }else
+          {
+            callback(false);
+          }
+      }
+      else{
+        Fluttertoast.showToast(msg: "Ops No Database Found");
+        callback(false);
+      }
+    });
   }
 }

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import '../home/home_page.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -46,9 +48,19 @@ class _LoginPageState extends State<LoginPage> {
                     controller: paddCon,
                   ),
                   const SizedBox(height: 20),
+                  authProvider.isLoading?
+                      Center(
+                        child: CircularProgressIndicator(),
+                      ):
                   CustomButton(
                       btnTxt: 'Login',
                       onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    HomePage()),
+                                (Route<dynamic> route) => false);
                         if (emailCon.text.isEmpty) {
                           Fluttertoast.showToast(msg: "ID IS Required");
                         } else if (paddCon.text.isEmpty) {
@@ -57,7 +69,16 @@ class _LoginPageState extends State<LoginPage> {
                          else {
                            authProvider.login(emailCon.text,paddCon.text,(status){
                              if(status){
-                               authProvider.checkProfile();
+                               authProvider.checkProfile(emailCon.text,(status){
+                                 if(status){
+                                   Navigator.pushAndRemoveUntil(
+                                       context,
+                                       MaterialPageRoute(
+                                           builder: (BuildContext context) =>
+                                               HomePage()),
+                                           (Route<dynamic> route) => false);
+                                 }
+                               });
                              }
                            });
                         }
