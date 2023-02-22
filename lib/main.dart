@@ -2,6 +2,7 @@ import 'package:dreamtouch/app/controllers/auth_provider.dart';
 import 'package:dreamtouch/app/screen/common/common_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,13 +13,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  bool? isLogin = prefs.getBool("is_logged");
+  bool? isLogin = prefs.getBool("is_logged")??false;
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => OtherProvider()),
       ChangeNotifierProvider(create: (context) => AuthProvider()),
     ],
-    child: MyApp(isLogin!),
+    child: MyApp(isLogin),
   ));
 }
 
@@ -30,13 +31,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: result == true ? const HomePage() : CommonScreen(),
+      home: result == true ? const HomePage() : const CommonScreen(),
     );
   }
 }

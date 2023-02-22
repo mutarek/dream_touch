@@ -1,8 +1,10 @@
 import 'package:dreamtouch/app/controllers/auth_provider.dart';
+import 'package:dreamtouch/app/screen/home/visit_products.dart';
 import 'package:dreamtouch/utils/app_colors.dart';
 import 'package:dreamtouch/utils/text.styles.dart';
 import 'package:dreamtouch/widgets/page_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/custom_image.dart';
 
@@ -36,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                 width: double.infinity,
                 color: AppColors.primaryColorLight,
                 child: Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     child: Column(
@@ -70,26 +72,31 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 80,
                       width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        elevation: 2,
-                        child: Row(
-                          children:  [
-                            const SizedBox(width: 10),
-                            circularImage("https://cdn-icons-png.flaticon.com/512/166/166258.png",45,45),
-                            const SizedBox(width: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text("Visit",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                              ],
-                            ),
-                            Spacer(),
-                            Icon(Icons.arrow_circle_right_sharp,size: 35),
-                            SizedBox(width: 20),
-                          ],
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (builder)=> VisitProducts()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          elevation: 2,
+                          child: Row(
+                            children:  [
+                              const SizedBox(width: 10),
+                              circularImage("https://cdn-icons-png.flaticon.com/512/166/166258.png",45,45),
+                              const SizedBox(width: 10),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Visit",style: robotoStyle500Medium.copyWith(fontSize:20)),
+                                ],
+                              ),
+                              Spacer(),
+                              Icon(Icons.arrow_circle_right_sharp,size: 35),
+                              SizedBox(width: 20),
+                            ],
+                          ),
                         ),
                       ),
                     ),
