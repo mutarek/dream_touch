@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dreamtouch/app/controllers/visit_product_controller.dart';
+import 'package:dreamtouch/utils/text.styles.dart';
 import 'package:dreamtouch/widgets/page_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +15,28 @@ class VisitProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const PageAppBar(title: "Products"),
-      body: GridView.builder(
+      body: Obx(()=> visitCon.isLoading.value?
+      const Center(
+        child: CircularProgressIndicator(),
+      ):GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
           ),
-          itemCount: 10,
+          itemCount: visitCon.productList.length,
           itemBuilder: (_, index) {
-            return const Card();
-          }),
+            var data = visitCon.productList[index];
+            return Card(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CachedNetworkImage(imageUrl: data.image!),
+                  const SizedBox(height: 5),
+                  Text(data.title!,style: robotoStyle700Bold.copyWith(fontSize: 15),)
+                ],
+              ),
+            );
+          }))
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:dreamtouch/app/controllers/auth_provider.dart';
+import 'package:dreamtouch/app/screen/home/success_report_page.dart';
 import 'package:dreamtouch/app/screen/home/visit_products.dart';
 import 'package:dreamtouch/utils/app_colors.dart';
 import 'package:dreamtouch/utils/text.styles.dart';
@@ -92,8 +93,8 @@ class _HomePageState extends State<HomePage> {
                                   Text("Visit",style: robotoStyle500Medium.copyWith(fontSize:20)),
                                 ],
                               ),
-                              Spacer(),
-                              Icon(Icons.arrow_circle_right_sharp,size: 35),
+                              const Spacer(),
+                              const Icon(Icons.arrow_circle_right_sharp,size: 35),
                               SizedBox(width: 20),
                             ],
                           ),
@@ -103,28 +104,33 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 80,
                       width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        elevation: 2,
-                        child: Row(
-                          children:  [
-                            const SizedBox(width: 10),
-                            circularImage("https://cdn-icons-png.flaticon.com/512/174/174685.png",45,45),
-                            const SizedBox(width: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Success Report",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                                Text("16",style: robotoStyle700Bold.copyWith(fontSize:20)),
-                              ],
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_circle_right_sharp,size: 35),
-                            const SizedBox(width: 20),
-                          ],
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (builder)=> SuccessReportPage()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          elevation: 2,
+                          child: Row(
+                            children:  [
+                              const SizedBox(width: 10),
+                              circularImage("https://cdn-icons-png.flaticon.com/512/174/174685.png",45,45),
+                              const SizedBox(width: 10),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Success Report",style: robotoStyle500Medium.copyWith(fontSize:20)),
+                                  Text("16",style: robotoStyle700Bold.copyWith(fontSize:20)),
+                                ],
+                              ),
+                              const Spacer(),
+                              const Icon(Icons.arrow_circle_right_sharp,size: 35),
+                              const SizedBox(width: 20),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -174,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Earning Money",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                                Text("৳ 20000",style: robotoStyle700Bold.copyWith(fontSize:20)),
+                                Text("৳ ${authProvider.wallet}",style: robotoStyle700Bold.copyWith(fontSize:20)),
                               ],
                             ),
                             const Spacer(),

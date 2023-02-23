@@ -10,11 +10,13 @@ class AuthProvider with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
   late final DocumentReference documentReference;
+
   get user => _auth.currentUser;
   bool isLoading = false;
   String userName = "";
   String userProfile = "";
   String workPermitCode = "";
+  String wallet = "";
 
   createAccount(String email, String pass, Function callback) async {
     isLoading = true;
@@ -54,12 +56,13 @@ class AuthProvider with ChangeNotifier {
       'nidOrBirthUrl': nidUrl,
       'user_profileUrl': photoUrl,
       'is_approved': false,
+      'wallet': "0",
     };
     usersRef.doc(email).set(data).then((value) {
       callback(true);
       isLoading = false;
       notifyListeners();
-    }).catchError((error){
+    }).catchError((error) {
       callback(false);
       isLoading = false;
       notifyListeners();
@@ -82,35 +85,38 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     });
   }
-  getSpecie(String email,Function callback) async {
+
+  getSpecie(String email, Function callback) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     CollectionReference collectionReference = firebaseFirestore.collection("Users");
     DocumentSnapshot snap = await collectionReference.doc(email).get();
     bool approved = ((snap.data() as Map)['is_approved']);
-    if(approved){
+    if (approved) {
       isLoading = false;
       callback(true);
       saveToLocalStorage(email);
       notifyListeners();
-    }else{
+    } else {
       callback(false);
       isLoading = false;
       notifyListeners();
       Fluttertoast.showToast(msg: "Admin Didn't Approved");
     }
   }
-  saveToLocalStorage(String email) async{
+
+  saveToLocalStorage(String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('email', email);
     prefs.setBool("is_logged", true);
   }
 
-  getFromLocalStorage() async{
+  getFromLocalStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? stringValue = prefs.getString('email');
     return stringValue;
   }
-  getCurrentUserProfile() async{
+
+  getCurrentUserProfile() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? stringValue = prefs.getString('email');
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -119,8 +125,7 @@ class AuthProvider with ChangeNotifier {
     userName = ((snap.data() as Map)['user_name']);
     userProfile = ((snap.data() as Map)['user_profileUrl']);
     workPermitCode = ((snap.data() as Map)['permitCode']);
+    wallet = ((snap.data() as Map)['wallet']);
     notifyListeners();
   }
 }
-
-

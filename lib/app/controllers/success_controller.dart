@@ -4,12 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/product_model.dart';
 
-class VisitProductController extends GetxController {
+class SuccessController extends GetxController{
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   late CollectionReference collectionReference;
   var productList = <ProductModel>[].obs;
   var isLoading = true.obs;
   var currentDocs = "".obs;
+
 
   @override
   void onInit() async{
@@ -22,7 +23,7 @@ class VisitProductController extends GetxController {
 
   Stream<List<ProductModel>> getAllProducts() {
     isLoading(true);
-    return collectionReference.doc(currentDocs.value).collection("Products").snapshots().map((QuerySnapshot query) {
+    return collectionReference.doc(currentDocs.value).collection("Failure").snapshots().map((QuerySnapshot query) {
       List<ProductModel> hotels = [];
       for (var hotel in query.docs) {
         final hotemote = ProductModel.fromMap(documentSnapshot: hotel);
@@ -31,12 +32,5 @@ class VisitProductController extends GetxController {
       }
       return hotels;
     });
-  }
-
-  getFromLocalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? stringValue = prefs.getString('email') ?? "mohiuddintarek2017@gmail.com";
-    print(stringValue);
-    return stringValue;
   }
 }
