@@ -1,5 +1,6 @@
 import 'package:dreamtouch/app/controllers/auth_provider.dart';
 import 'package:dreamtouch/app/screen/home/success_report_page.dart';
+import 'package:dreamtouch/app/screen/home/view_notice.dart';
 import 'package:dreamtouch/app/screen/home/visit_products.dart';
 import 'package:dreamtouch/utils/app_colors.dart';
 import 'package:dreamtouch/utils/text.styles.dart';
@@ -106,7 +107,37 @@ class _HomePageState extends State<HomePage> {
                       width: double.infinity,
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context,MaterialPageRoute(builder: (builder)=> SuccessReportPage()));
+                          Navigator.push(context,MaterialPageRoute(builder: (builder)=> ViewNotice()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          elevation: 2,
+                          child: Row(
+                            children:  [
+                              const SizedBox(width: 10),
+                              circularImage("https://cdn-icons-png.flaticon.com/512/166/166258.png",45,45),
+                              const SizedBox(width: 10),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("Notice",style: robotoStyle500Medium.copyWith(fontSize:20)),
+                                ],
+                              ),
+                              const Spacer(),
+                              const Icon(Icons.arrow_circle_right_sharp,size: 35),
+                              const SizedBox(width: 20),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 80,
+                      width: double.infinity,
+                      child: InkWell(
+                        onTap: (){
                         },
                         child: Card(
                           shape: RoundedRectangleBorder(
@@ -123,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text("Success Report",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                                  Text("16",style: robotoStyle700Bold.copyWith(fontSize:20)),
+                                  Text(authProvider.success,style: robotoStyle700Bold.copyWith(fontSize:20)),
                                 ],
                               ),
                               const Spacer(),
@@ -152,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("Lead Generation",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                                Text("20",style: robotoStyle700Bold.copyWith(fontSize:20)),
+                                Text(authProvider.lead,style: robotoStyle700Bold.copyWith(fontSize:20)),
                               ],
                             ),
                             const Spacer(),
@@ -193,34 +224,39 @@ class _HomePageState extends State<HomePage> {
                     SizedBox(
                       height: 80,
                       width: double.infinity,
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15)
-                        ),
-                        elevation: 2,
-                        child: Row(
-                          children:  [
-                            const SizedBox(width: 10),
-                            circularImage("https://cdn-icons-png.flaticon.com/512/3029/3029287.png",45,45),
-                            const SizedBox(width: 10),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Earning Method",style: robotoStyle500Medium.copyWith(fontSize:20)),
-                                Text("17",style: robotoStyle700Bold.copyWith(fontSize:20)),
-                              ],
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_circle_right_sharp,size: 35),
-                            const SizedBox(width: 20),
-                          ],
+                      child: InkWell(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (builder)=> EarningMethod()));
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15)
+                          ),
+                          elevation: 2,
+                          child: Row(
+                            children:  [
+                              const SizedBox(width: 10),
+                              circularImage("https://cdn-icons-png.flaticon.com/512/3029/3029287.png",45,45),
+                              const SizedBox(width: 10),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Earning Method",style: robotoStyle500Medium.copyWith(fontSize:20)),
+                                  Text("17",style: robotoStyle700Bold.copyWith(fontSize:20)),
+                                ],
+                              ),
+                              const Spacer(),
+                              const Icon(Icons.arrow_circle_right_sharp,size: 35),
+                              const SizedBox(width: 20),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

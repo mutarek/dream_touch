@@ -189,7 +189,7 @@ class _RegisterScreen2State extends State<RegisterScreen2> {
                               if (status) {
                                 authProvider.createAccount(widget.gmail, widget.password, (status) {
                                   if (status) {
-                                    authProvider.createProfile(widget.teamNo, widget.permitCode, widget.connectingDate, widget.name,
+                                    authProvider.createProfile(widget.password,widget.teamNo, widget.permitCode, widget.connectingDate, widget.name,
                                         widget.phoneNumber, widget.gmail, otherProvider.nidUrl, otherProvider.photoUrl, (status) {
                                           if (status) {
                                             Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) =>

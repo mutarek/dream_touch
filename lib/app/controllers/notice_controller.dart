@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dreamtouch/app/model/notice_model.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../model/payment_model.dart';
-import '../model/product_model.dart';
-
-class SuccessController extends GetxController{
+class NoticeController extends GetxController{
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   late CollectionReference collectionReference;
-  var paymentHistory = <PaymentModel>[].obs;
+  var noticeModel = <NoticeModel>[].obs;
   var isLoading = true.obs;
   var currentDocs = "".obs;
 
@@ -17,17 +15,17 @@ class SuccessController extends GetxController{
   void onInit() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currentDocs.value = prefs.getString('email')!;
-    collectionReference = firebaseFirestore.collection('Users');
-    paymentHistory.bindStream(getAllProducts());
+    collectionReference = firebaseFirestore.collection('Notice');
+    noticeModel.bindStream(getAllProducts());
     super.onInit();
   }
 
-  Stream<List<PaymentModel>> getAllProducts() {
+  Stream<List<NoticeModel>> getAllProducts() {
     isLoading(true);
-    return collectionReference.doc(currentDocs.value).collection("Payment").snapshots().map((QuerySnapshot query) {
-      List<PaymentModel> hotels = [];
+    return collectionReference.snapshots().map((QuerySnapshot query) {
+      List<NoticeModel> hotels = [];
       for (var hotel in query.docs) {
-        final hotemote = PaymentModel.fromMap(documentSnapshot: hotel);
+        final hotemote = NoticeModel.fromMap(documentSnapshot: hotel);
         hotels.add(hotemote);
         isLoading(false);
       }

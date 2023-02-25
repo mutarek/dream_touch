@@ -4,59 +4,45 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/success_controller.dart';
 
-class SuccessReportPage extends StatelessWidget {
-  SuccessReportPage({Key? key}) : super(key: key);
+class EarningMethod extends StatelessWidget {
+  EarningMethod({Key? key}) : super(key: key);
   final successReport = Get.put(SuccessController());
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: const PageAppBar(
         title: "Success Report",
       ),
-      body: Obx(() => successReport.isLoading.value?
-      const Center(
-        child: CircularProgressIndicator(),
-      ):
-          successReport.productList.isEmpty?
-              const Center(
-                child: Text("No Success Report"),
-              ):
-              ListView.builder(
-                itemCount: successReport.productList.length,
-                itemBuilder: (_,index){
-                  var success = successReport.productList[index];
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)
-                    ),
-                    child: Container(
-                      height: 200,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                          image: NetworkImage(success.image!),fit: BoxFit.fitWidth
-                        )
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(success.title!,style: robotoStyle700Bold.copyWith(fontSize: 17,color: Colors.white)),
-                            const SizedBox(height: 5),
-                            Text(success.description!,style: robotoStyle700Bold.copyWith(fontSize: 14,color: Colors.white)),
-                            const SizedBox(height: 10),
-                          ],
+      body: Obx(() => successReport.isLoading.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : successReport.paymentHistory.isEmpty
+              ? const Center(
+                  child: Text("No Success Report"),
+                )
+              : ListView.builder(
+                  itemCount: successReport.paymentHistory.length,
+                  itemBuilder: (_, index) {
+                    var success = successReport.paymentHistory[index];
+                    return Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.only(left: 10, right: 10),
+                        title: Text(
+                          success.amount!,
+                          style: robotoStyle700Bold.copyWith(fontSize: 13),
                         ),
+                        subtitle: Text(
+                          success.number!,
+                          style: robotoStyle700Bold.copyWith(fontSize: 13),
+                        ),
+                        trailing: Text(success.method!),
                       ),
-                    ),
-                  );
-                },
-              )
-      ),
+                    );
+                  },
+                )),
     );
   }
 }

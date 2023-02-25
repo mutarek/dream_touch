@@ -17,6 +17,8 @@ class AuthProvider with ChangeNotifier {
   String userProfile = "";
   String workPermitCode = "";
   String wallet = "";
+  String success = "";
+  String lead = "";
 
   createAccount(String email, String pass, Function callback) async {
     isLoading = true;
@@ -43,7 +45,7 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  createProfile(String teamNo, String permitCode, String connecting, String name, String number, String email, String nidUrl,
+  createProfile(String pass,String teamNo, String permitCode, String connecting, String name, String number, String email, String nidUrl,
       String photoUrl, Function callback) {
     final usersRef = FirebaseFirestore.instance.collection("Users");
     Map<String, dynamic> data = {
@@ -57,6 +59,9 @@ class AuthProvider with ChangeNotifier {
       'user_profileUrl': photoUrl,
       'is_approved': false,
       'wallet': "0",
+      'success': "0",
+      'lead': "0",
+      'password': pass,
     };
     usersRef.doc(email).set(data).then((value) {
       callback(true);
@@ -126,6 +131,8 @@ class AuthProvider with ChangeNotifier {
     userProfile = ((snap.data() as Map)['user_profileUrl']);
     workPermitCode = ((snap.data() as Map)['permitCode']);
     wallet = ((snap.data() as Map)['wallet']);
+    success = ((snap.data() as Map)['success']);
+    lead = ((snap.data() as Map)['lead']);
     notifyListeners();
   }
 }

@@ -15,14 +15,14 @@ class VisitProductController extends GetxController {
   void onInit() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
     currentDocs.value = prefs.getString('email')!;
-    collectionReference = firebaseFirestore.collection('Users');
+    collectionReference = firebaseFirestore.collection('Products');
     productList.bindStream(getAllProducts());
     super.onInit();
   }
 
   Stream<List<ProductModel>> getAllProducts() {
     isLoading(true);
-    return collectionReference.doc(currentDocs.value).collection("Products").snapshots().map((QuerySnapshot query) {
+    return collectionReference.snapshots().map((QuerySnapshot query) {
       List<ProductModel> hotels = [];
       for (var hotel in query.docs) {
         final hotemote = ProductModel.fromMap(documentSnapshot: hotel);
