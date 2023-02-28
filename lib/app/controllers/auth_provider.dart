@@ -18,6 +18,7 @@ class AuthProvider with ChangeNotifier {
   String workPermitCode = "";
   String wallet = "";
   String success = "";
+  String failure = "";
   String lead = "";
 
   createAccount(String email, String pass, Function callback) async {
@@ -75,6 +76,15 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
+  logout(Function callback) {
+    _auth.signOut().then((value){
+      removeUser();
+      callback(true);
+    }).catchError((onError){
+      callback(false);
+    });
+  }
+
   login(String email, String pass, Function callback) async {
     isLoading = true;
     notifyListeners();
@@ -115,6 +125,12 @@ class AuthProvider with ChangeNotifier {
     prefs.setBool("is_logged", true);
   }
 
+  removeUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('email');
+    prefs.remove('is_logged');
+  }
+
   getFromLocalStorage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? stringValue = prefs.getString('email');
@@ -133,6 +149,7 @@ class AuthProvider with ChangeNotifier {
     wallet = ((snap.data() as Map)['wallet']);
     success = ((snap.data() as Map)['success']);
     lead = ((snap.data() as Map)['lead']);
+    failure = ((snap.data() as Map)['failed']);
     notifyListeners();
   }
 }
