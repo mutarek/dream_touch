@@ -13,8 +13,6 @@ class VisitProductController extends GetxController {
 
   @override
   void onInit() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currentDocs.value = prefs.getString('email')!;
     collectionReference = firebaseFirestore.collection('Products');
     productList.bindStream(getAllProducts());
     super.onInit();
@@ -31,12 +29,5 @@ class VisitProductController extends GetxController {
       }
       return hotels;
     });
-  }
-
-  getFromLocalStorage() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? stringValue = prefs.getString('email') ?? "mohiuddintarek2017@gmail.com";
-    print(stringValue);
-    return stringValue;
   }
 }

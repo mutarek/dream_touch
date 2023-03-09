@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dreamtouch/app/model/notice_model.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NoticeController extends GetxController{
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -13,8 +12,6 @@ class NoticeController extends GetxController{
 
   @override
   void onInit() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    currentDocs.value = prefs.getString('email')!;
     collectionReference = firebaseFirestore.collection('Notice');
     noticeModel.bindStream(getAllProducts());
     super.onInit();
